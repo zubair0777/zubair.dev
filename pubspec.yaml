@@ -1,0 +1,35 @@
+name: zubair_portfolio
+description: Zubair's professional Flutter Web portfolio (UI-only, demo assets included).
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.3.2
+  animated_text_kit: ^4.3.0
+  url_launcher: ^6.3.2
+  flutter_animate: ^4.5.2
+  font_awesome_flutter: ^10.10.0
+  animations: ^2.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/images/me.jpg
+    - assets/images/project1.jpg
+
+# flutter_launcher_icons configuration
+flutter_icons:
+  android: true
+  ios: true
+  web : true
+
+  image_path: "assets/images/Logo.png"

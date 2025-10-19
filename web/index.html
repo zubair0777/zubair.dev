@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Rana Zubair — Flutter Developer Portfolio">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Rana Zubair Portfolio">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Zubair.dev</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #0F2027, #203A43, #2C5364);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ⚡ Loading animation */
+    .loader {
+      text-align: center;
+      color: white;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      animation: fadeIn 2s ease-in-out infinite alternate;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top: 3px solid #00e0ff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 20px;
+      animation: spin 1.2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+<!-- 💫 Custom loading screen -->
+<div id="loader">
+  <div class="spinner"></div>
+  <div class="loader">🚀 Loading Zubair’s Portfolio...</div>
+</div>
+
+<!-- Flutter App Script -->
+<script src="flutter_bootstrap.js" async onload="
+      document.getElementById('loader').style.display='none';
+    "></script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD7r_Uw8OEHxil4MIvW7AUPqto3yYC2Gsk",
+    authDomain: "zubairdev-35c65.firebaseapp.com",
+    projectId: "zubairdev-35c65",
+    storageBucket: "zubairdev-35c65.firebasestorage.app",
+    messagingSenderId: "1015288754111",
+    appId: "1:1015288754111:web:282a9b931e568b192a3b0a",
+    measurementId: "G-36GK82BE94"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</body>
+</html>
