@@ -118,12 +118,12 @@ class ResumePage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.card.withOpacity(0.9),
+          color: AppColors.card.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+          border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
           boxShadow: [
             BoxShadow(
-              color: AppColors.accent.withOpacity(0.15),
+              color: AppColors.accent.withValues(alpha: 0.15),
               blurRadius: 10,
               offset: const Offset(0, 4),
             )

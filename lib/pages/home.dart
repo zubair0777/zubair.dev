@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import '../core/constants.dart';
-import '../widgets/animated_name.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../core/constants.dart';
 
 class HomePage extends StatelessWidget {
   final Function(int) onNavigate;
@@ -11,184 +10,311 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isMobile = MediaQuery.of(context).size.width < 800;
+    final size = MediaQuery.of(context).size;
+    final bool isMobile = size.width < 900;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 24 : 100,
-        vertical: isMobile ? 60 : 100,
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment.topRight,
+          radius: 1.5,
+          colors: [
+            AppColors.accent.withValues(alpha: 0.05),
+            Colors.transparent,
+          ],
+        ),
       ),
-      child: Center(
-        child: Flex(
-          direction: isMobile ? Axis.vertical : Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 24 : size.width * 0.1,
+          vertical: isMobile ? 40 : 80,
+        ),
+        child: Column(
           children: [
-            // LEFT SIDE CONTENT
-            Expanded(
-              flex: isMobile ? 0 : 5,
-              child: Column(
-                crossAxisAlignment:
-                isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hi! I'm",
-                    style: TextStyle(
-                      color: AppColors.muted,
-                      fontSize: isMobile ? 18 : 22,
-                    ),
-                  ).animate().fadeIn(duration: 600.ms).moveX(begin: -40),
-
-                  // Animated name (different color for first/last name)
-                  AnimatedTextKit(
-                    repeatForever: true,
-                    animatedTexts: [
-                      TyperAnimatedText(
-                        "Rana ",
-                        textStyle: TextStyle(
-                          color: AppColors.white,
-                          fontSize: isMobile ? 36 : 56,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        speed: const Duration(milliseconds: 120),
-                      ),
-                      TyperAnimatedText(
-                        "Zubair",
-                        textStyle: TextStyle(
-                          foreground: Paint()
-                            ..shader = const LinearGradient(
-                              colors: [AppColors.accentGradientStart, AppColors.accentGradientEnd],
-                            ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
-                          fontSize: isMobile ? 36 : 56,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        speed: const Duration(milliseconds: 120),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Animated role text
-                  AnimatedTextKit(
-                    repeatForever: true,
-                    animatedTexts: [
-                      TyperAnimatedText(
-                        "Flutter Developer 💙",
-                        textStyle: TextStyle(
-                          color: AppColors.accent,
-                          fontSize: isMobile ? 20 : 28,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        speed: const Duration(milliseconds: 120),
-                      ),
-                      TyperAnimatedText(
-                        "Firebase Expert 🔥",
-                        textStyle: TextStyle(
-                          color: AppColors.accent,
-                          fontSize: isMobile ? 20 : 28,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        speed: const Duration(milliseconds: 120),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  Text(
-                    "I create modern, fast, and scalable Flutter apps with beautiful UI and Firebase integration.",
-                    style: TextStyle(
-                      color: AppColors.muted,
-                      fontSize: isMobile ? 15 : 17,
-                      height: 1.5,
-                    ),
-                  ).animate().fadeIn(duration: 800.ms),
-
-                  const SizedBox(height: 30),
-
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 12,
+            Flex(
+              direction: isMobile ? Axis.vertical : Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // LEFT CONTENT
+                Expanded(
+                  flex: isMobile ? 0 : 6,
+                  child: Column(
+                    crossAxisAlignment: isMobile
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
                     children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          launchUrl(Uri.parse(
-                              'https://drive.google.com/file/d/1xX9qLXagk2WsNGYb2VhJJwOl4aL-N2Gy/view?usp=drive_link'));
-                        },
-                        icon: const Icon(Icons.download, color: Colors.black),
-                        label: const Text("Download CV" ,style: TextStyle(color: Colors.black),),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 22, vertical: 14),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: () => onNavigate(4),
-                        icon: const Icon(Icons.send, color: AppColors.accent),
-                        label: const Text(
-                          "Hire Me Now",
-                          style: TextStyle(color: AppColors.accent),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.accent),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 22, vertical: 14),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                      ),
+                      _buildGreeting().animate().fadeIn(duration: 800.ms).slideX(begin: -0.2),
+                      const SizedBox(height: 20),
+                      _buildMainTitle(isMobile),
+                      const SizedBox(height: 15),
+                      _buildSubTitle(isMobile),
+                      const SizedBox(height: 30),
+                      _buildDescription(isMobile).animate().fadeIn(duration: 1.seconds, delay: 400.ms),
+                      const SizedBox(height: 45),
+                      _buildActionButtons(onNavigate).animate().fadeIn(duration: 1.seconds, delay: 600.ms).slideY(begin: 0.2),
+                      if (!isMobile) ...[
+                        const SizedBox(height: 60),
+                        _buildSocialProof(),
+                      ],
                     ],
                   ),
-                ],
-              ),
+                ),
+
+                if (!isMobile) const SizedBox(width: 40),
+
+                // RIGHT IMAGE
+                if (!isMobile)
+                  Expanded(
+                    flex: 4,
+                    child: _buildHeroImage(),
+                  ),
+                
+                if (isMobile) ...[
+                  const SizedBox(height: 60),
+                  _buildHeroImage(),
+                  const SizedBox(height: 40),
+                ]
+              ],
             ),
-
-            const SizedBox(width: 60, height: 60),
-
-            // RIGHT SIDE IMAGE (only for larger screens)
-            if (!isMobile)
-              Expanded(
-                flex: 4,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Curved yellow background
-                    Positioned(
-                      right: 0,
-                      child: Container(
-                        width: 380,
-                        height: 380,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.accentGradientStart,
-                              AppColors.accentGradientEnd,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                      ),
-                    ),
-                    ClipOval(
-                      child: Image.asset(
-                        "assets/images/me.jpg",
-                        width: 330,
-                        height: 330,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
-                ).animate().fadeIn(duration: 800.ms).moveX(begin: 60),
-              ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildGreeting() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.accent.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.waving_hand, color: AppColors.accent, size: 16),
+          const SizedBox(width: 8),
+          Text(
+            "WELCOME TO MY WORLD",
+            style: TextStyle(
+              color: AppColors.accent,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainTitle(bool isMobile) {
+    return Column(
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Text(
+          "I'm Rana Zubair",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: isMobile ? 42 : 72,
+            fontWeight: FontWeight.w900,
+            height: 1.1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubTitle(bool isMobile) {
+    return SizedBox(
+      height: isMobile ? 40 : 60,
+      child: DefaultTextStyle(
+        style: TextStyle(
+          fontSize: isMobile ? 24 : 36,
+          fontWeight: FontWeight.bold,
+          color: AppColors.accent,
+        ),
+        child: AnimatedTextKit(
+          repeatForever: true,
+          animatedTexts: [
+            TypewriterAnimatedText('Flutter Developer.'),
+            TypewriterAnimatedText('Firebase Expert.'),
+            TypewriterAnimatedText('UI/UX Designer.'),
+            TypewriterAnimatedText('AI Enthusiast.'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDescription(bool isMobile) {
+    return Text(
+      "Specializing in building exceptional digital experiences that are fast, accessible, visually stunning, and responsive. I turn complex problems into elegant, production-ready Flutter applications.",
+      textAlign: isMobile ? TextAlign.center : TextAlign.start,
+      style: TextStyle(
+        color: AppColors.muted,
+        fontSize: isMobile ? 16 : 18,
+        height: 1.6,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(Function(int) onNavigate) {
+    return Wrap(
+      spacing: 20,
+      runSpacing: 20,
+      alignment: WrapAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () => onNavigate(1),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.accent,
+            foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 8,
+            shadowColor: AppColors.accent.withValues(alpha: 0.4),
+          ),
+          child: const Text(
+            "VIEW MY WORK",
+            style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+          ),
+        ),
+        OutlinedButton(
+          onPressed: () {
+            launchUrl(Uri.parse('https://drive.google.com/file/d/1xX9qLXagk2WsNGYb2VhJJwOl4aL-N2Gy/view?usp=drive_link'));
+          },
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.white,
+            side: const BorderSide(color: Colors.white24, width: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text(
+            "DOWNLOAD CV",
+            style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeroImage() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Decorative background elements
+        Container(
+          width: 320,
+          height: 320,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [AppColors.accent.withValues(alpha: 0.2), Colors.transparent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+            .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: 2.seconds),
+        
+        // Main Image Container
+        Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.accent.withValues(alpha: 0.3), width: 2),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.accent.withValues(alpha: 0.5), width: 1),
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                "assets/images/me.jpg",
+                width: 280,
+                height: 280,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        
+        // Rotating Ring
+        Positioned.fill(
+          child: CustomPaint(
+            painter: RingPainter(color: AppColors.accent.withValues(alpha: 0.4)),
+          ).animate(onPlay: (controller) => controller.repeat())
+            .rotate(duration: 10.seconds),
+        ),
+      ],
+    ).animate().fadeIn(duration: 1.seconds).scale(begin: const Offset(0.8, 0.8));
+  }
+
+  Widget _buildSocialProof() {
+    return Row(
+      children: [
+        _socialIcon(Icons.code, "15+ Projects"),
+        const SizedBox(width: 30),
+        _socialIcon(Icons.rocket_launch, "1 Year Exp."),
+        const SizedBox(width: 30),
+        _socialIcon(Icons.verified, "Certified"),
+      ],
+    );
+  }
+
+  Widget _socialIcon(IconData icon, String label) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColors.accent, size: 20),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.7),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class RingPainter extends CustomPainter {
+  final Color color;
+  RingPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 + 30;
+
+    // Draw some dashed or dotted arcs for a techy feel
+    for (int i = 0; i < 8; i++) {
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        i * 0.8,
+        0.4,
+        false,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

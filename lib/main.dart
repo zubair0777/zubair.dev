@@ -16,24 +16,34 @@ void main() {
   runApp(const PortfolioApp());
 }
 
-class PortfolioApp extends StatefulWidget {
+class PortfolioApp extends StatelessWidget {
   const PortfolioApp({super.key});
 
   @override
-  State<PortfolioApp> createState() => _PortfolioAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: '${AppStrings.name} — Portfolio',
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        scaffoldBackgroundColor: AppColors.bg,
+        brightness: Brightness.dark,
+        useMaterial3: true,
+      ),
+      home: const MainLayout(),
+    );
+  }
 }
 
-class _PortfolioAppState extends State<PortfolioApp> {
-  int _selected = 0;
+class MainLayout extends StatefulWidget {
+  const MainLayout({super.key});
 
   @override
-  void initState() {
-    super.initState();
+  State<MainLayout> createState() => _MainLayoutState();
+}
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      precacheImage(const AssetImage('assets/images/me.jpg'), context);
-    });
-  }
+class _MainLayoutState extends State<MainLayout> {
+  int _selected = 0;
 
   void _onTap(int idx) => setState(() => _selected = idx);
 
@@ -47,160 +57,203 @@ class _PortfolioAppState extends State<PortfolioApp> {
       const ContactPage(),
     ];
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: '${AppStrings.name} — Portfolio',
-      theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(),
-        scaffoldBackgroundColor: AppColors.bg,
-        brightness: Brightness.dark,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.accent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-      home: Scaffold(
-        appBar: NavBar(selectedIndex: _selected, onTap: _onTap),
-
-        // ✅ Drawer for mobile
-        endDrawer: Builder(
-          builder: (context) => Drawer(
-            backgroundColor: AppColors.panel,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18),
-                bottomLeft: Radius.circular(18),
-              ),
-            ),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // 🔹 Drawer Header with Avatar fix
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 28),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppColors.accent, AppColors.accentGradientEnd],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.5),
-                              width: 2,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            radius: 55,
-                            backgroundColor: Colors.transparent,
-                            child: ClipOval(
-                              child: Image.asset(
-                                "assets/images/me.jpg",
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          "Rana Zubair",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // 🔹 Menu Items
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        _drawerItem(context, "🏠 Home", 0),
-                        _drawerItem(context, "💼 Projects", 1),
-                        _drawerItem(context, "👨‍💻 About", 2),
-                        _drawerItem(context, "📄 Resume", 3),
-                        _drawerItem(context, "📬 Contact", 4),
-                      ],
-                    ),
-                  ),
-
-                  // 🔹 Social Links
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () => _launchURL("https://github.com/zubair0777"),
-                          icon: const Icon(Icons.code, color: Colors.white70),
-                        ),
-                        IconButton(
-                          onPressed: () => _launchURL("https://linkedin.com/in/zubair-siddiq-761800371"),
-                          icon: const Icon(Icons.business, color: Colors.white70),
-                        ),
-                        IconButton(
-                          onPressed: () => _launchURL("mailto:zubair.flutter.dev@gmail.com"),
-                          icon: const Icon(Icons.email, color: Colors.white70),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      // Drawer on the left is more standard for Android
+      drawer: _buildDrawer(context),
+      appBar: NavBar(selectedIndex: _selected, onTap: _onTap),
+      body: Stack(
+        children: [
+          // 🌌 Seamless Global Background (Eliminates Black Bars)
+          Positioned.fill(
+            child: Container(
+              color: AppColors.bg,
+              child: CustomPaint(
+                painter: BackgroundPainter(),
               ),
             ),
           ),
-        ),
+          
+          // Dynamic Ambient Glows
+          Positioned(
+            top: -150,
+            right: -150,
+            child: _buildBlob(AppColors.accent.withValues(alpha: 0.15), 500),
+          ),
+          Positioned(
+            bottom: -100,
+            left: -100,
+            child: _buildBlob(AppColors.accent.withValues(alpha: 0.1), 450),
+          ),
 
-        // ✅ Smooth Page Transitions
-        body: PageTransitionSwitcher(
-          duration: const Duration(milliseconds: 500),
-          transitionBuilder: (child, animation, secondaryAnimation) =>
-              SharedAxisTransition(
-                animation: animation,
-                secondaryAnimation: secondaryAnimation,
-                transitionType: SharedAxisTransitionType.scaled,
-                child: RepaintBoundary(child: child), // smooth render
-              ),
-          child: pages[_selected],
-        ),
+          // Content Area with Smooth Transitions
+          PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 700),
+            transitionBuilder: (child, animation, secondaryAnimation) =>
+                FadeThroughTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  child: child,
+                ),
+            child: pages[_selected],
+          ),
+        ],
       ),
     );
   }
 
-  // 🔹 Drawer Item
-  Widget _drawerItem(BuildContext context, String title, int index) {
-    return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white70, fontSize: 16),
+  Widget _buildBlob(Color color, double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color,
+            blurRadius: 200,
+            spreadRadius: 100,
+          )
+        ],
       ),
-      onTap: () {
-        Navigator.pop(context);
-        _onTap(index);
-      },
     );
   }
 
-  // 🔹 Launch URLs (GitHub, LinkedIn, etc.)
-  void _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      debugPrint('Could not launch $url');
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: AppColors.panel,
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Column(
+        children: [
+          // Premium Header
+          Container(
+            padding: const EdgeInsets.only(top: 60, bottom: 30, left: 20, right: 20),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.accent, AppColors.accentGradientStart],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: const CircleAvatar(
+                    radius: 45,
+                    backgroundImage: AssetImage("assets/images/me.jpg"),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                const Text(
+                  AppStrings.name,
+                  style: TextStyle(
+                    color: Colors.white, 
+                    fontWeight: FontWeight.bold, 
+                    fontSize: 20,
+                  ),
+                ),
+                Text(
+                  "Flutter Developer", 
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Navigation List
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+              children: [
+                _drawerItem(Icons.home_rounded, "Home", 0),
+                _drawerItem(Icons.grid_view_rounded, "Projects", 1),
+                _drawerItem(Icons.person_rounded, "About Me", 2),
+                _drawerItem(Icons.description_rounded, "Resume", 3),
+                _drawerItem(Icons.email_rounded, "Contact", 4),
+              ],
+            ),
+          ),
+
+          // Footer Socials
+          Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _socialIcon(Icons.code_rounded, AppStrings.github),
+                const SizedBox(width: 20),
+                _socialIcon(Icons.link_rounded, "https://linkedin.com/in/zubair-siddiq-761800371"),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _drawerItem(IconData icon, String title, int index) {
+    final isSelected = _selected == index;
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: isSelected ? AppColors.accent.withValues(alpha: 0.15) : Colors.transparent,
+      ),
+      child: ListTile(
+        leading: Icon(
+          icon, 
+          color: isSelected ? AppColors.accent : Colors.white54,
+        ),
+        title: Text(
+          title, 
+          style: TextStyle(
+            color: isSelected ? AppColors.accent : Colors.white70,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        onTap: () {
+          // Navigator.pop(context) now works because MainLayout is a separate widget
+          Navigator.pop(context);
+          _onTap(index);
+        },
+      ),
+    );
+  }
+
+  Widget _socialIcon(IconData icon, String url) {
+    return IconButton(
+      onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      icon: Icon(icon, color: AppColors.accent, size: 24),
+    );
+  }
+}
+
+class BackgroundPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.04)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    const spacing = 50.0;
+    for (var i = 0.0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (var i = 0.0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
     }
   }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
